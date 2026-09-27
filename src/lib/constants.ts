@@ -1,4 +1,4 @@
-import type { UserRole, StudentStatus, DocumentStatus, VerificationStatus, AlertStatus } from './types'
+import type { UserRole, StudentStatus, RecordType, RecordStatus, DocumentStatus, VerificationStatus, AlertStatus } from './types'
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Administrator',
@@ -52,6 +52,32 @@ export const ALERT_STATUS_COLORS: Record<AlertStatus, string> = {
   expiring_soon: 'bg-amber-100 text-amber-700',
   expired: 'bg-red-100 text-red-700',
   no_expiry: 'bg-neutral-100 text-neutral-500',
+}
+
+export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
+  enrollment: 'Enrollment',
+  medical: 'Medical',
+  academic: 'Academic',
+  financial: 'Financial',
+  other: 'Other',
+}
+
+export const RECORD_TYPE_COLORS: Record<RecordType, string> = {
+  enrollment: 'bg-blue-100 text-blue-700',
+  medical: 'bg-red-100 text-red-700',
+  academic: 'bg-green-100 text-green-700',
+  financial: 'bg-amber-100 text-amber-700',
+  other: 'bg-neutral-100 text-neutral-600',
+}
+
+export const RECORD_STATUS_LABELS: Record<RecordStatus, string> = {
+  active: 'Active',
+  archived: 'Archived',
+}
+
+export const RECORD_STATUS_COLORS: Record<RecordStatus, string> = {
+  active: 'bg-green-100 text-green-700',
+  archived: 'bg-neutral-100 text-neutral-500',
 }
 
 export const NAV_ITEMS = [

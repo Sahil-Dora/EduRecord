@@ -217,7 +217,7 @@ export type Database = {
           created_at?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [{ foreignKeyName: 'records_student_id_fkey', columns: ['student_id'], referencedRelation: 'students', referencedColumns: ['id'] }]
       }
       document_types: {
         Row: DocumentType

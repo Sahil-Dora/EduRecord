@@ -6,6 +6,7 @@ import { Dashboard } from './pages/Dashboard'
 import { Students } from './pages/Students'
 import { StudentDetail } from './pages/StudentDetail'
 import { Records } from './pages/Records'
+import { RecordDetail } from './pages/RecordDetail'
 import { Documents } from './pages/Documents'
 import { DocumentDetail } from './pages/DocumentDetail'
 import { Search } from './pages/Search'
@@ -32,6 +33,7 @@ export function AppRouter() {
         <Route path="/students" element={<Students />} />
         <Route path="/students/:id" element={<StudentDetail />} />
         <Route path="/records" element={<Records />} />
+        <Route path="/records/:id" element={<RecordDetail />} />
         <Route path="/documents" element={<Documents />} />
         <Route path="/documents/:id" element={<DocumentDetail />} />
         <Route path="/search" element={<Search />} />
