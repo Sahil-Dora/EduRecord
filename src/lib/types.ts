@@ -8,6 +8,8 @@ export type RecordStatus = 'active' | 'archived'
 
 export type DocumentStatus = 'pending' | 'analyzed' | 'verified' | 'rejected'
 
+export type ExtractionStatus = 'not_started' | 'pending' | 'complete' | 'error'
+
 export type VerificationStatus = 'verified' | 'rejected' | 'pending'
 
 export type AlertStatus = 'current' | 'expiring_soon' | 'expired' | 'no_expiry'
@@ -72,6 +74,8 @@ export type Document = {
   file_size: number | null
   mime_type: string | null
   status: DocumentStatus
+  extraction_status: ExtractionStatus
+  extraction_error: string | null
   expiry_date: string | null
   uploaded_by: string | null
   created_at: string
@@ -89,6 +93,16 @@ export type DocumentAnalysis = {
   flags: string[] | null
   model_used: string | null
   analyzed_by: string | null
+  created_at: string
+}
+
+export type DocumentChunk = {
+  id: string
+  document_id: string
+  chunk_index: number
+  content: string
+  metadata: Record<string, unknown> | null
+  embedding: number[] | null
   created_at: string
 }
 
@@ -252,6 +266,8 @@ export type Database = {
           file_size?: number | null
           mime_type?: string | null
           status?: string
+          extraction_status?: string
+          extraction_error?: string | null
           expiry_date?: string | null
           uploaded_by?: string | null
           created_at?: string
@@ -268,6 +284,8 @@ export type Database = {
           file_size?: number | null
           mime_type?: string | null
           status?: string
+          extraction_status?: string
+          extraction_error?: string | null
           expiry_date?: string | null
           uploaded_by?: string | null
           created_at?: string
@@ -308,6 +326,30 @@ export type Database = {
           created_at?: string
         }
         Relationships: []
+      }
+      document_chunks: {
+        Row: DocumentChunk
+        Insert: {
+          id?: string
+          document_id: string
+          chunk_index: number
+          content: string
+          metadata?: Record<string, unknown> | null
+          embedding?: number[] | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          document_id?: string
+          chunk_index?: number
+          content?: string
+          metadata?: Record<string, unknown> | null
+          embedding?: number[] | null
+          created_at?: string
+        }
+        Relationships: [
+          { foreignKeyName: 'document_chunks_document_id_fkey', columns: ['document_id'], referencedRelation: 'documents', referencedColumns: ['id'] }
+        ]
       }
       verifications: {
         Row: Verification

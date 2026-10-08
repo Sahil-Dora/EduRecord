@@ -8,7 +8,7 @@ import { Modal } from '../components/ui/Modal'
 import { ConfirmDialog } from '../components/ui/ConfirmDialog'
 import { Spinner, ErrorState } from '../components/ui/Spinner'
 import { useAuth } from '../context/AuthContext'
-import { DOCUMENT_STATUS_LABELS, DOCUMENT_STATUS_COLORS } from '../lib/constants'
+import { DOCUMENT_STATUS_LABELS, DOCUMENT_STATUS_COLORS, EXTRACTION_STATUS_LABELS, EXTRACTION_STATUS_COLORS } from '../lib/constants'
 import { formatDate, formatDateTime, formatFileSize } from '../lib/utils'
 import {
   fetchDocumentById,
@@ -17,13 +17,20 @@ import {
   createSignedDownloadUrl,
   fetchRecordOptionsByStudent,
   fetchDocumentTypes,
+  triggerExtraction,
+  triggerAnalysis,
+  triggerEmbeddings,
+  fetchDocumentAnalyses,
+  fetchDocumentChunks,
   type DocumentWithRelations,
   type DocumentUpdateInput,
+  type ExtractionResponse,
 } from '../lib/documents'
-import type { DocumentStatus, RecordRow } from '../lib/types'
+import type { DocumentAnalysis, DocumentChunk, DocumentStatus, ExtractionStatus, RecordRow } from '../lib/types'
 
 const STATUSES: DocumentStatus[] = ['pending', 'analyzed', 'verified', 'rejected']
 type RecordOption = Pick<RecordRow, 'id' | 'title'>
+type ChunkRow = Omit<DocumentChunk, 'embedding'>
 
 export function DocumentDetail() {
   const { id } = useParams<{ id: string }>()
@@ -41,8 +48,14 @@ export function DocumentDetail() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const [extracting, setExtracting] = useState(false)
+  const [analyzing, setAnalyzing] = useState(false)
+  const [embedding, setEmbedding] = useState(false)
+  const [analyses, setAnalyses] = useState<DocumentAnalysis[]>([])
+  const [analysesLoading, setAnalysesLoading] = useState(false)
+  const [chunks, setChunks] = useState<ChunkRow[]>([])
+  const [chunksLoading, setChunksLoading] = useState(false)
 
-  // Edit form state
   const [records, setRecords] = useState<RecordOption[]>([])
   const [docTypes, setDocTypes] = useState<{ id: string; name: string }[]>([])
   const [editForm, setEditForm] = useState({
@@ -68,9 +81,42 @@ export function DocumentDetail() {
     }
   }, [id])
 
+  const loadAnalyses = useCallback(async () => {
+    if (!id) return
+    setAnalysesLoading(true)
+    try {
+      const data = await fetchDocumentAnalyses(id)
+      setAnalyses(data)
+    } catch {
+      setAnalyses([])
+    } finally {
+      setAnalysesLoading(false)
+    }
+  }, [id])
+
+  const loadChunks = useCallback(async () => {
+    if (!id) return
+    setChunksLoading(true)
+    try {
+      const data = await fetchDocumentChunks(id)
+      setChunks(data)
+    } catch {
+      setChunks([])
+    } finally {
+      setChunksLoading(false)
+    }
+  }, [id])
+
   useEffect(() => {
     load()
   }, [load])
+
+  useEffect(() => {
+    if (doc?.extraction_status === 'complete') {
+      loadAnalyses()
+      loadChunks()
+    }
+  }, [doc?.extraction_status, loadAnalyses, loadChunks])
 
   const openEdit = async () => {
     if (!doc) return
@@ -81,7 +127,6 @@ export function DocumentDetail() {
       status: doc.status,
       expiry_date: doc.expiry_date ?? '',
     })
-    // Load records for this student and doc types
     fetchRecordOptionsByStudent(doc.student_id).then(setRecords).catch(() => setRecords([]))
     fetchDocumentTypes().then((types) => setDocTypes(types.map((t) => ({ id: t.id, name: t.name })))).catch(() => setDocTypes([]))
     setEditOpen(true)
@@ -134,6 +179,54 @@ export function DocumentDetail() {
     }
   }
 
+  const handleExtract = async () => {
+    if (!doc || !id) return
+    setExtracting(true)
+    setError(null)
+    try {
+      const result: ExtractionResponse = await triggerExtraction(id)
+      await load()
+      if (result.success) {
+        await loadAnalyses()
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to extract text')
+      await load()
+    } finally {
+      setExtracting(false)
+    }
+  }
+
+  const handleAnalyze = async () => {
+    if (!doc || !id) return
+    setAnalyzing(true)
+    setError(null)
+    try {
+      await triggerAnalysis(id)
+      await load()
+      await loadAnalyses()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to analyze document')
+      await load()
+    } finally {
+      setAnalyzing(false)
+    }
+  }
+
+  const handleGenerateEmbeddings = async () => {
+    if (!doc || !id) return
+    setEmbedding(true)
+    setError(null)
+    try {
+      await triggerEmbeddings(id)
+      await loadChunks()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to generate embeddings')
+    } finally {
+      setEmbedding(false)
+    }
+  }
+
   if (loading) {
     return (
       <PageContainer>
@@ -155,6 +248,8 @@ export function DocumentDetail() {
   const studentName = doc.students
     ? `${doc.students.first_name} ${doc.students.last_name}`
     : 'Unknown Student'
+
+  const analyzedRow = analyses.find((a) => a.summary)
 
   return (
     <PageContainer>
@@ -181,6 +276,30 @@ export function DocumentDetail() {
               </svg>
               Download
             </Button>
+            {canEdit && (
+              <Button variant="secondary" onClick={handleExtract} loading={extracting} disabled={doc.extraction_status === 'pending'}>
+                <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {doc.extraction_status === 'complete' ? 'Re-extract Text' : 'Extract Text'}
+              </Button>
+            )}
+            {canEdit && (
+              <Button variant="secondary" onClick={handleAnalyze} loading={analyzing} disabled={doc.extraction_status !== 'complete'}>
+                <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.8a2 2 0 11-3.536 0z" />
+                </svg>
+                Analyze with AI
+              </Button>
+            )}
+            {canEdit && (
+              <Button variant="secondary" onClick={handleGenerateEmbeddings} loading={embedding} disabled={doc.extraction_status !== 'complete'}>
+                <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                {chunks.length > 0 ? 'Rebuild Chunks' : 'Generate Chunks'}
+              </Button>
+            )}
             {canEdit && (
               <Button variant="secondary" onClick={openEdit}>
                 <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -227,6 +346,77 @@ export function DocumentDetail() {
               </dl>
             </CardBody>
           </Card>
+
+          <Card>
+            <CardHeader
+              title="Text Extraction"
+              action={
+                <Badge className={EXTRACTION_STATUS_COLORS[doc.extraction_status]}>
+                  {EXTRACTION_STATUS_LABELS[doc.extraction_status]}
+                </Badge>
+              }
+            />
+            <CardBody>
+              {doc.extraction_error && (
+                <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {doc.extraction_error}
+                </div>
+              )}
+
+              {doc.extraction_status === 'not_started' && (
+                <p className="text-sm text-neutral-500">
+                  Text has not been extracted from this document yet.
+                  {canEdit && ' Click "Extract Text" to start extraction.'}
+                </p>
+              )}
+
+              {doc.extraction_status === 'pending' && (
+                <div className="flex items-center gap-2 text-sm text-neutral-500">
+                  <Spinner size="sm" />
+                  Extraction is in progress...
+                </div>
+              )}
+
+              {doc.extraction_status === 'error' && (
+                <p className="text-sm text-neutral-500">
+                  Extraction failed. {canEdit && 'You can retry by clicking "Extract Text" again.'}
+                </p>
+              )}
+
+              {doc.extraction_status === 'complete' && (
+                analysesLoading ? (
+                  <div className="flex items-center gap-2 text-sm text-neutral-500">
+                    <Spinner size="sm" />
+                    Loading extracted text...
+                  </div>
+                ) : analyses.length === 0 ? (
+                  <p className="text-sm text-neutral-500">Extraction completed but no text was found.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {analyses.filter((a) => a.extracted_text).map((analysis) => (
+                      <div key={analysis.id} className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-neutral-500">
+                            Extracted {formatDateTime(analysis.created_at)}
+                          </span>
+                          {analysis.model_used && (
+                            <span className="text-xs text-neutral-400">via {analysis.model_used}</span>
+                          )}
+                        </div>
+                        {analysis.extracted_text ? (
+                          <pre className="text-sm text-neutral-700 whitespace-pre-wrap break-words max-h-96 overflow-y-auto font-mono bg-white rounded border border-neutral-100 p-3">
+                            {analysis.extracted_text}
+                          </pre>
+                        ) : (
+                          <p className="text-sm text-neutral-400">No text content extracted.</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )
+              )}
+            </CardBody>
+          </Card>
         </div>
 
         <div className="space-y-4">
@@ -259,6 +449,50 @@ export function DocumentDetail() {
               <Badge className={DOCUMENT_STATUS_COLORS[doc.status]}>
                 {DOCUMENT_STATUS_LABELS[doc.status]}
               </Badge>
+            </CardBody>
+          </Card>
+
+          {analyzedRow && (
+            <Card>
+              <CardHeader title="AI Analysis" />
+              <CardBody>
+                <AnalysisResultCard analysis={analyzedRow} />
+              </CardBody>
+            </Card>
+          )}
+
+          {canEdit && doc.extraction_status === 'complete' && !analyzedRow && (
+            <Card>
+              <CardBody>
+                <p className="text-sm text-neutral-500 mb-3">No AI analysis yet. Run analysis to get a summary, classification, and key fields.</p>
+                <Button variant="secondary" onClick={handleAnalyze} loading={analyzing}>
+                  <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.5.8a2 2 0 11-3.536 0z" />
+                  </svg>
+                  Analyze with AI
+                </Button>
+              </CardBody>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader
+              title="RAG Chunks"
+              action={
+                chunks.length > 0 ? (
+                  <Badge className="bg-green-100 text-green-800">{chunks.length} chunks</Badge>
+                ) : null
+              }
+            />
+            <CardBody>
+              <ChunksContent
+                extractionStatus={doc.extraction_status}
+                chunksLoading={chunksLoading}
+                chunks={chunks}
+                canEdit={canEdit}
+                embedding={embedding}
+                onGenerate={handleGenerateEmbeddings}
+              />
             </CardBody>
           </Card>
         </div>
@@ -358,6 +592,146 @@ export function DocumentDetail() {
         loading={deleting}
       />
     </PageContainer>
+  )
+}
+
+function AnalysisResultCard({ analysis }: { analysis: DocumentAnalysis }) {
+  const confidencePct = analysis.confidence_score !== null ? Math.round(analysis.confidence_score * 100) : null
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Summary</h4>
+        <p className="text-sm text-neutral-800">{analysis.summary}</p>
+      </div>
+
+      {analysis.suggested_type && (
+        <div>
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Suggested Type</h4>
+          <Badge className="bg-blue-100 text-blue-800">{analysis.suggested_type}</Badge>
+        </div>
+      )}
+
+      {confidencePct !== null && (
+        <div>
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Confidence</h4>
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-32 rounded-full bg-neutral-200 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary-500"
+                style={{ width: `${confidencePct}%` }}
+              />
+            </div>
+            <span className="text-sm text-neutral-600">{confidencePct}%</span>
+          </div>
+        </div>
+      )}
+
+      {analysis.key_fields && Object.keys(analysis.key_fields).length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Key Fields</h4>
+          <dl className="grid grid-cols-1 gap-1">
+            {Object.entries(analysis.key_fields).map(([key, value]) => (
+              <div key={key} className="flex justify-between text-sm">
+                <dt className="text-neutral-500 capitalize">{key.replace(/_/g, ' ')}</dt>
+                <dd className="text-neutral-800 font-medium text-right">{String(value)}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )}
+
+      {analysis.flags && analysis.flags.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Flags</h4>
+          <div className="flex flex-wrap gap-2">
+            {analysis.flags.map((flag, i) => (
+              <Badge
+                key={i}
+                className={
+                  flag.includes('sensitive') ? 'bg-red-100 text-red-800'
+                  : flag.includes('expired') ? 'bg-orange-100 text-orange-800'
+                  : flag.includes('incomplete') ? 'bg-yellow-100 text-yellow-800'
+                  : 'bg-neutral-100 text-neutral-700'
+                }
+              >
+                {flag.replace(/_/g, ' ')}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {analysis.model_used && (
+        <div className="pt-2 border-t border-neutral-100">
+          <p className="text-xs text-neutral-400">Analyzed via {analysis.model_used}</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ChunksContent({
+  extractionStatus,
+  chunksLoading,
+  chunks,
+  canEdit,
+  embedding,
+  onGenerate,
+}: {
+  extractionStatus: ExtractionStatus
+  chunksLoading: boolean
+  chunks: ChunkRow[]
+  canEdit: boolean
+  embedding: boolean
+  onGenerate: () => void
+}) {
+  if (extractionStatus !== 'complete') {
+    return <p className="text-sm text-neutral-500">Extract text first to generate chunks and embeddings.</p>
+  }
+
+  if (chunksLoading) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-neutral-500">
+        <Spinner size="sm" />
+        Loading chunks...
+      </div>
+    )
+  }
+
+  if (chunks.length === 0) {
+    return (
+      <div>
+        <p className="text-sm text-neutral-500 mb-3">No chunks generated yet. Generate chunks to build the RAG index for this document.</p>
+        {canEdit && (
+          <Button variant="secondary" onClick={onGenerate} loading={embedding}>
+            <svg className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            Generate Chunks
+          </Button>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-2">
+      {chunks.slice(0, 5).map((chunk) => (
+        <div key={chunk.id} className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-medium text-neutral-500">Chunk {chunk.chunk_index + 1}</span>
+            <span className="text-xs text-neutral-400">{chunk.content.length} chars</span>
+          </div>
+          <p className="text-sm text-neutral-700" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{chunk.content}</p>
+        </div>
+      ))}
+      {chunks.length > 5 && (
+        <p className="text-xs text-neutral-400 text-center pt-1">
+          + {chunks.length - 5} more chunks
+        </p>
+      )}
+    </div>
   )
 }
 

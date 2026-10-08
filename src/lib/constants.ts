@@ -1,4 +1,4 @@
-import type { UserRole, StudentStatus, RecordType, RecordStatus, DocumentStatus, VerificationStatus, AlertStatus } from './types'
+import type { UserRole, StudentStatus, RecordType, RecordStatus, DocumentStatus, ExtractionStatus, VerificationStatus, AlertStatus } from './types'
 
 export const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Administrator',
@@ -52,6 +52,20 @@ export const ALERT_STATUS_COLORS: Record<AlertStatus, string> = {
   expiring_soon: 'bg-amber-100 text-amber-700',
   expired: 'bg-red-100 text-red-700',
   no_expiry: 'bg-neutral-100 text-neutral-500',
+}
+
+export const EXTRACTION_STATUS_LABELS: Record<ExtractionStatus, string> = {
+  not_started: 'Not Started',
+  pending: 'Extracting...',
+  complete: 'Extracted',
+  error: 'Extraction Failed',
+}
+
+export const EXTRACTION_STATUS_COLORS: Record<ExtractionStatus, string> = {
+  not_started: 'bg-neutral-100 text-neutral-600',
+  pending: 'bg-amber-100 text-amber-700',
+  complete: 'bg-green-100 text-green-700',
+  error: 'bg-red-100 text-red-700',
 }
 
 export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
