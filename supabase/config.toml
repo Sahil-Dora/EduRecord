@@ -1,3 +1,11 @@
 [functions.analyze-document]
 verify_jwt = true
 entrypoint = "./functions/analyze-document/index.ts"
+
+[functions.extract-text]
+verify_jwt = true
+entrypoint = "./functions/extract-text/index.ts"
+
+[functions.generate-embeddings]
+verify_jwt = true
+entrypoint = "./functions/generate-embeddings/index.ts"

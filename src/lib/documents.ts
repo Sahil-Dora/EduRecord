@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import type { Document, DocumentStatus, Student, RecordRow } from './types'
+import type { Document, DocumentAnalysis, DocumentChunk, DocumentStatus, Student, RecordRow } from './types'
 
 export interface DocumentWithRelations extends Document {
   students: Pick<Student, 'id' | 'first_name' | 'last_name' | 'student_number'> | null
@@ -196,4 +196,133 @@ export async function fetchDocumentTypes(): Promise<{ id: string; name: string; 
 
   if (error) throw error
   return data ?? []
+}
+
+export interface ExtractionResponse {
+  success: boolean
+  document_id: string
+  char_count: number
+  extractor: string
+}
+
+export async function triggerExtraction(documentId: string): Promise<ExtractionResponse> {
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`
+  const { data: sessionData } = await supabase.auth.getSession()
+  const accessToken = sessionData.session?.access_token
+
+  if (!accessToken) throw new Error('Not authenticated')
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({ document_id: documentId }),
+  })
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({ error: 'Request failed' }))
+    throw new Error(body.error ?? `Extraction failed (${response.status})`)
+  }
+
+  const data = await response.json() as ExtractionResponse
+  if (!data.success) throw new Error('Extraction did not succeed')
+  return data
+}
+
+export async function fetchDocumentAnalyses(documentId: string): Promise<DocumentAnalysis[]> {
+  const { data, error } = await supabase
+    .from('document_analyses')
+    .select('*')
+    .eq('document_id', documentId)
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data ?? []
+}
+
+export interface AnalysisResponse {
+  success: boolean
+  document_id: string
+  summary: string
+  suggested_type: string
+  key_fields: Record<string, string>
+  flags: string[]
+  confidence_score: number
+  model_used: string
+}
+
+export async function triggerAnalysis(documentId: string): Promise<AnalysisResponse> {
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/analyze-document`
+  const { data: sessionData } = await supabase.auth.getSession()
+  const accessToken = sessionData.session?.access_token
+
+  if (!accessToken) throw new Error('Not authenticated')
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({ document_id: documentId }),
+  })
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({ error: 'Request failed' }))
+    throw new Error(body.error ?? `Analysis failed (${response.status})`)
+  }
+
+  const data = await response.json() as AnalysisResponse
+  if (!data.success) throw new Error('Analysis did not succeed')
+  return data
+}
+
+export async function fetchDocumentChunks(documentId: string): Promise<Omit<DocumentChunk, 'embedding'>[]> {
+  const { data, error } = await supabase
+    .from('document_chunks')
+    .select('id, document_id, chunk_index, content, metadata, created_at')
+    .eq('document_id', documentId)
+    .order('chunk_index', { ascending: true })
+
+  if (error) throw error
+  return data ?? []
+}
+
+export interface EmbeddingResponse {
+  success: boolean
+  document_id: string
+  chunk_count: number
+  embedding_dim: number
+  embedding_method: string
+}
+
+export async function triggerEmbeddings(documentId: string): Promise<EmbeddingResponse> {
+  const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-embeddings`
+  const { data: sessionData } = await supabase.auth.getSession()
+  const accessToken = sessionData.session?.access_token
+
+  if (!accessToken) throw new Error('Not authenticated')
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify({ document_id: documentId }),
+  })
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({ error: 'Request failed' }))
+    throw new Error(body.error ?? `Embedding generation failed (${response.status})`)
+  }
+
+  const data = await response.json() as EmbeddingResponse
+  if (!data.success) throw new Error('Embedding generation did not succeed')
+  return data
 }
