@@ -26,13 +26,13 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   }
 
   return (
-    <header className="h-16 bg-white border-b border-neutral-200 flex items-center justify-between px-4 md:px-6">
+    <header className="h-16 neu-base flex items-center justify-between px-4 md:px-6 border-b border-neutral-200/40">
       <button
         onClick={onMenuClick}
-        className="lg:hidden p-2 rounded-lg hover:bg-neutral-100"
+        className="lg:hidden p-2.5 rounded-xl text-neutral-600 hover:bg-surface-light active:shadow-neu-inset-sm transition-all"
         aria-label="Toggle menu"
       >
-        <svg className="h-5 w-5 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
@@ -42,9 +42,9 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
       <div className="relative" ref={menuRef}>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-neutral-100 transition-colors"
+          className="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-surface-light active:shadow-neu-inset-sm transition-all"
         >
-          <div className="h-9 w-9 rounded-full bg-primary-600 flex items-center justify-center text-white text-sm font-semibold">
+          <div className="h-9 w-9 rounded-xl neu-raised-sm flex items-center justify-center text-primary-700 text-sm font-semibold">
             {getInitials(profile?.full_name ?? '')}
           </div>
           <div className="hidden md:block text-left">
@@ -59,14 +59,14 @@ export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
         </button>
 
         {menuOpen && (
-          <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-50">
-            <div className="px-4 py-2 border-b border-neutral-100">
+          <div className="absolute right-0 mt-2 w-56 neu-raised rounded-xl py-1 z-50">
+            <div className="px-4 py-2 border-b border-neutral-200/60">
               <p className="text-sm font-medium text-neutral-800">{profile?.full_name}</p>
               <p className="text-xs text-neutral-500">{profile ? ROLE_LABELS[profile.role] : ''}</p>
             </div>
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-700 hover:bg-surface-light transition-colors"
             >
               <svg className="h-4 w-4 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

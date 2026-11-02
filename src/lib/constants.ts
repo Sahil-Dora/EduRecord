@@ -14,10 +14,10 @@ export const STUDENT_STATUS_LABELS: Record<StudentStatus, string> = {
 }
 
 export const STUDENT_STATUS_COLORS: Record<StudentStatus, string> = {
-  active: 'bg-green-100 text-green-700',
-  inactive: 'bg-neutral-100 text-neutral-600',
-  graduated: 'bg-blue-100 text-blue-700',
-  withdrawn: 'bg-red-100 text-red-700',
+  active: 'neu-inset-sm text-green-700',
+  inactive: 'neu-inset-sm text-neutral-600',
+  graduated: 'neu-inset-sm text-primary-700',
+  withdrawn: 'neu-inset-sm text-red-700',
 }
 
 export const DOCUMENT_STATUS_LABELS: Record<DocumentStatus, string> = {
@@ -28,10 +28,10 @@ export const DOCUMENT_STATUS_LABELS: Record<DocumentStatus, string> = {
 }
 
 export const DOCUMENT_STATUS_COLORS: Record<DocumentStatus, string> = {
-  pending: 'bg-amber-100 text-amber-700',
-  analyzed: 'bg-blue-100 text-blue-700',
-  verified: 'bg-green-100 text-green-700',
-  rejected: 'bg-red-100 text-red-700',
+  pending: 'neu-inset-sm text-amber-700',
+  analyzed: 'neu-inset-sm text-primary-700',
+  verified: 'neu-inset-sm text-green-700',
+  rejected: 'neu-inset-sm text-red-700',
 }
 
 export const VERIFICATION_STATUS_LABELS: Record<VerificationStatus, string> = {
@@ -48,10 +48,10 @@ export const ALERT_STATUS_LABELS: Record<AlertStatus, string> = {
 }
 
 export const ALERT_STATUS_COLORS: Record<AlertStatus, string> = {
-  current: 'bg-green-100 text-green-700',
-  expiring_soon: 'bg-amber-100 text-amber-700',
-  expired: 'bg-red-100 text-red-700',
-  no_expiry: 'bg-neutral-100 text-neutral-500',
+  current: 'neu-inset-sm text-green-700',
+  expiring_soon: 'neu-inset-sm text-amber-700',
+  expired: 'neu-inset-sm text-red-700',
+  no_expiry: 'neu-inset-sm text-neutral-500',
 }
 
 export const EXTRACTION_STATUS_LABELS: Record<ExtractionStatus, string> = {
@@ -62,10 +62,10 @@ export const EXTRACTION_STATUS_LABELS: Record<ExtractionStatus, string> = {
 }
 
 export const EXTRACTION_STATUS_COLORS: Record<ExtractionStatus, string> = {
-  not_started: 'bg-neutral-100 text-neutral-600',
-  pending: 'bg-amber-100 text-amber-700',
-  complete: 'bg-green-100 text-green-700',
-  error: 'bg-red-100 text-red-700',
+  not_started: 'neu-inset-sm text-neutral-600',
+  pending: 'neu-inset-sm text-amber-700',
+  complete: 'neu-inset-sm text-green-700',
+  error: 'neu-inset-sm text-red-700',
 }
 
 export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
@@ -77,11 +77,11 @@ export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
 }
 
 export const RECORD_TYPE_COLORS: Record<RecordType, string> = {
-  enrollment: 'bg-blue-100 text-blue-700',
-  medical: 'bg-red-100 text-red-700',
-  academic: 'bg-green-100 text-green-700',
-  financial: 'bg-amber-100 text-amber-700',
-  other: 'bg-neutral-100 text-neutral-600',
+  enrollment: 'neu-inset-sm text-primary-700',
+  medical: 'neu-inset-sm text-red-700',
+  academic: 'neu-inset-sm text-green-700',
+  financial: 'neu-inset-sm text-amber-700',
+  other: 'neu-inset-sm text-neutral-600',
 }
 
 export const RECORD_STATUS_LABELS: Record<RecordStatus, string> = {
@@ -90,8 +90,8 @@ export const RECORD_STATUS_LABELS: Record<RecordStatus, string> = {
 }
 
 export const RECORD_STATUS_COLORS: Record<RecordStatus, string> = {
-  active: 'bg-green-100 text-green-700',
-  archived: 'bg-neutral-100 text-neutral-500',
+  active: 'neu-inset-sm text-green-700',
+  archived: 'neu-inset-sm text-neutral-500',
 }
 
 export const NAV_ITEMS = [

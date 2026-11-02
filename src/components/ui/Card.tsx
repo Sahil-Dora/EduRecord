@@ -8,7 +8,7 @@ interface CardProps {
 
 export function Card({ children, className }: CardProps) {
   return (
-    <div className={cn('bg-white rounded-xl border border-neutral-200 shadow-sm', className)}>
+    <div className={cn('neu-raised rounded-2xl', className)}>
       {children}
     </div>
   )
@@ -22,7 +22,7 @@ interface CardHeaderProps {
 
 export function CardHeader({ title, description, action }: CardHeaderProps) {
   return (
-    <div className="flex items-start justify-between px-6 py-4 border-b border-neutral-100">
+    <div className="flex items-start justify-between px-6 py-4 border-b border-neutral-200/60">
       <div>
         <h3 className="text-base font-semibold text-neutral-800">{title}</h3>
         {description && <p className="text-sm text-neutral-500 mt-0.5">{description}</p>}

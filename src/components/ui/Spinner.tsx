@@ -44,7 +44,7 @@ interface EmptyStateProps {
 export function EmptyState({ title, description, icon, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      {icon && <div className="mb-4 text-neutral-300">{icon}</div>}
+      {icon && <div className="mb-4 text-neutral-400">{icon}</div>}
       <h3 className="text-lg font-semibold text-neutral-800 mb-1">{title}</h3>
       {description && <p className="text-sm text-neutral-500 max-w-md mb-6">{description}</p>}
       {action}
@@ -60,7 +60,7 @@ interface ErrorStateProps {
 export function ErrorState({ message, onRetry }: ErrorStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-      <div className="mb-4 h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+      <div className="mb-4 h-12 w-12 rounded-xl neu-inset flex items-center justify-center">
         <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>

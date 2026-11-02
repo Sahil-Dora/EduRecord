@@ -358,7 +358,7 @@ export function DocumentDetail() {
             />
             <CardBody>
               {doc.extraction_error && (
-                <div className="mb-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div className="mb-3 rounded-xl neu-inset-sm px-4 py-3 text-sm text-red-700">
                   {doc.extraction_error}
                 </div>
               )}
@@ -394,7 +394,7 @@ export function DocumentDetail() {
                 ) : (
                   <div className="space-y-3">
                     {analyses.filter((a) => a.extracted_text).map((analysis) => (
-                      <div key={analysis.id} className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+                      <div key={analysis.id} className="rounded-xl neu-inset-sm p-3">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs font-medium text-neutral-500">
                             Extracted {formatDateTime(analysis.created_at)}
@@ -404,7 +404,7 @@ export function DocumentDetail() {
                           )}
                         </div>
                         {analysis.extracted_text ? (
-                          <pre className="text-sm text-neutral-700 whitespace-pre-wrap break-words max-h-96 overflow-y-auto font-mono bg-white rounded border border-neutral-100 p-3">
+                          <pre className="text-sm text-neutral-700 whitespace-pre-wrap break-words max-h-96 overflow-y-auto font-mono neu-inset-sm rounded-lg p-3">
                             {analysis.extracted_text}
                           </pre>
                         ) : (
@@ -428,7 +428,7 @@ export function DocumentDetail() {
                   onClick={() => navigate(`/students/${doc.students!.id}`)}
                   className="flex items-center gap-3 w-full text-left group"
                 >
-                  <div className="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-semibold shrink-0">
+                  <div className="h-10 w-10 rounded-full neu-raised-sm text-primary-700 flex items-center justify-center text-sm font-semibold shrink-0">
                     {(doc.students.first_name[0] ?? '') + (doc.students.last_name[0] ?? '')}
                   </div>
                   <div className="min-w-0">
@@ -480,7 +480,7 @@ export function DocumentDetail() {
               title="RAG Chunks"
               action={
                 chunks.length > 0 ? (
-                  <Badge className="bg-green-100 text-green-800">{chunks.length} chunks</Badge>
+                  <Badge className="neu-inset-sm text-green-700">{chunks.length} chunks</Badge>
                 ) : null
               }
             />
@@ -515,7 +515,7 @@ export function DocumentDetail() {
               type="text"
               value={editForm.title}
               onChange={(e) => setEditForm((f) => ({ ...f, title: e.target.value }))}
-              className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+              className="w-full rounded-xl neu-inset-sm px-3 py-2 text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
             />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -524,7 +524,7 @@ export function DocumentDetail() {
               <select
                 value={editForm.record_id}
                 onChange={(e) => setEditForm((f) => ({ ...f, record_id: e.target.value }))}
-                className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none bg-white"
+                className="w-full rounded-xl neu-inset-sm px-3 py-2 text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 <option value="">No linked record</option>
                 {records.map((r) => (
@@ -537,7 +537,7 @@ export function DocumentDetail() {
               <select
                 value={editForm.document_type_id}
                 onChange={(e) => setEditForm((f) => ({ ...f, document_type_id: e.target.value }))}
-                className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none bg-white"
+                className="w-full rounded-xl neu-inset-sm px-3 py-2 text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 <option value="">No type assigned</option>
                 {docTypes.map((t) => (
@@ -552,7 +552,7 @@ export function DocumentDetail() {
               <select
                 value={editForm.status}
                 onChange={(e) => setEditForm((f) => ({ ...f, status: e.target.value as DocumentStatus }))}
-                className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none bg-white"
+                className="w-full rounded-xl neu-inset-sm px-3 py-2 text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>{DOCUMENT_STATUS_LABELS[s]}</option>
@@ -565,7 +565,7 @@ export function DocumentDetail() {
                 type="date"
                 value={editForm.expiry_date}
                 onChange={(e) => setEditForm((f) => ({ ...f, expiry_date: e.target.value }))}
-                className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+                className="w-full rounded-xl neu-inset-sm px-3 py-2 text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
               />
             </div>
           </div>
@@ -608,7 +608,7 @@ function AnalysisResultCard({ analysis }: { analysis: DocumentAnalysis }) {
       {analysis.suggested_type && (
         <div>
           <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Suggested Type</h4>
-          <Badge className="bg-blue-100 text-blue-800">{analysis.suggested_type}</Badge>
+          <Badge className="neu-inset-sm text-primary-700">{analysis.suggested_type}</Badge>
         </div>
       )}
 
@@ -616,7 +616,7 @@ function AnalysisResultCard({ analysis }: { analysis: DocumentAnalysis }) {
         <div>
           <h4 className="text-xs font-medium text-neutral-500 uppercase tracking-wider mb-1">Confidence</h4>
           <div className="flex items-center gap-2">
-            <div className="h-2 w-32 rounded-full bg-neutral-200 overflow-hidden">
+            <div className="h-2 w-32 rounded-full neu-inset-sm overflow-hidden">
               <div
                 className="h-full rounded-full bg-primary-500"
                 style={{ width: `${confidencePct}%` }}
@@ -649,10 +649,10 @@ function AnalysisResultCard({ analysis }: { analysis: DocumentAnalysis }) {
               <Badge
                 key={i}
                 className={
-                  flag.includes('sensitive') ? 'bg-red-100 text-red-800'
-                  : flag.includes('expired') ? 'bg-orange-100 text-orange-800'
-                  : flag.includes('incomplete') ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-neutral-100 text-neutral-700'
+                  flag.includes('sensitive') ? 'neu-inset-sm text-red-700'
+                  : flag.includes('expired') ? 'neu-inset-sm text-amber-700'
+                  : flag.includes('incomplete') ? 'neu-inset-sm text-amber-600'
+                  : 'neu-inset-sm text-neutral-600'
                 }
               >
                 {flag.replace(/_/g, ' ')}
@@ -718,7 +718,7 @@ function ChunksContent({
   return (
     <div className="space-y-2">
       {chunks.slice(0, 5).map((chunk) => (
-        <div key={chunk.id} className="rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+        <div key={chunk.id} className="rounded-xl neu-inset-sm p-3">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium text-neutral-500">Chunk {chunk.chunk_index + 1}</span>
             <span className="text-xs text-neutral-400">{chunk.content.length} chars</span>

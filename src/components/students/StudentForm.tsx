@@ -94,11 +94,11 @@ export function StudentForm({ initial, onSubmit, onCancel, submitting }: Student
   }
 
   const inputClass = (key: string) =>
-    `w-full rounded-lg border px-3 py-2 text-sm transition-colors ${
+    `w-full rounded-xl px-3 py-2 text-sm transition-all neu-inset-sm ${
       errors[key]
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-neutral-300 focus:border-primary-500 focus:ring-primary-500'
-    } focus:outline-none focus:ring-1`
+        ? 'text-red-700 focus-visible:outline-red-500'
+        : 'focus-visible:outline-primary-500'
+    } focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2`
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

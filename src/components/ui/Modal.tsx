@@ -26,16 +26,16 @@ export function Modal({ open, onClose, title, description, children, size = 'md'
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/40" onClick={onClose} />
-      <div className={`relative bg-white rounded-xl shadow-xl border border-neutral-200 w-full ${sizeClass} max-h-[90vh] flex flex-col`}>
-        <div className="flex items-start justify-between px-6 py-4 border-b border-neutral-100 shrink-0">
+      <div className="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm" onClick={onClose} />
+      <div className={`relative neu-raised rounded-2xl w-full ${sizeClass} max-h-[90vh] flex flex-col`}>
+        <div className="flex items-start justify-between px-6 py-4 border-b border-neutral-200/60 shrink-0">
           <div>
             <h2 className="text-lg font-semibold text-neutral-900">{title}</h2>
             {description && <p className="text-sm text-neutral-500 mt-0.5">{description}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 transition-colors"
+            className="p-2 rounded-lg text-neutral-500 hover:bg-surface-light hover:text-neutral-700 active:shadow-neu-inset-sm transition-all"
             aria-label="Close"
           >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

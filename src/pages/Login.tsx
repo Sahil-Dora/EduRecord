@@ -28,11 +28,11 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+    <div className="min-h-screen flex items-center justify-center neu-base px-4">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
-          <div className="h-12 w-12 rounded-xl bg-primary-600 flex items-center justify-center mb-3">
-            <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="h-14 w-14 rounded-2xl neu-raised-sm flex items-center justify-center mb-3">
+            <svg className="h-7 w-7 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
@@ -40,11 +40,11 @@ export function Login() {
           <p className="text-sm text-neutral-500 mt-1">AI Document & Record Management System</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-neutral-200 shadow-sm p-8">
+        <div className="neu-raised rounded-2xl p-8">
           <h2 className="text-lg font-semibold text-neutral-800 mb-6">Sign in to your account</h2>
 
           {error && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
+            <div className="mb-4 p-3 rounded-xl neu-inset-sm text-sm text-red-700">
               {error}
             </div>
           )}
@@ -60,7 +60,7 @@ export function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3.5 py-2.5 rounded-xl neu-inset-sm text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 placeholder="you@institution.edu"
                 autoComplete="email"
               />
@@ -76,7 +76,7 @@ export function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-lg border border-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                className="w-full px-3.5 py-2.5 rounded-xl neu-inset-sm text-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
                 placeholder="••••••••"
                 autoComplete="current-password"
               />

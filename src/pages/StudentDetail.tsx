@@ -217,7 +217,7 @@ export function StudentDetail() {
                   <div
                     key={rec.id}
                     onClick={() => navigate(`/records/${rec.id}`)}
-                    className="flex items-center justify-between px-6 py-3 hover:bg-neutral-50 cursor-pointer transition-colors"
+                    className="flex items-center justify-between px-6 py-3 hover:bg-surface-light cursor-pointer transition-colors"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-neutral-900 truncate">{rec.title}</p>
@@ -238,7 +238,7 @@ export function StudentDetail() {
                             deleteStudentRecord(rec.id).then(() => loadRecords()).finally(() => setRecordDeleting(false))
                           }}
                           disabled={recordDeleting}
-                          className="p-1 rounded-lg text-neutral-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="p-1 rounded-lg text-neutral-400 hover:text-red-600 active:shadow-neu-inset-sm transition-all"
                           aria-label="Delete record"
                         >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -285,7 +285,7 @@ export function StudentDetail() {
                   <div
                     key={d.id}
                     onClick={() => navigate(`/documents/${d.id}`)}
-                    className="flex items-center justify-between px-6 py-3 hover:bg-neutral-50 cursor-pointer transition-colors"
+                    className="flex items-center justify-between px-6 py-3 hover:bg-surface-light cursor-pointer transition-colors"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-neutral-900 truncate">{d.title}</p>
@@ -303,7 +303,7 @@ export function StudentDetail() {
                             deleteStudentDoc(d.id).then(() => loadDocs()).finally(() => setDocDeleting(false))
                           }}
                           disabled={docDeleting}
-                          className="p-1 rounded-lg text-neutral-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="p-1 rounded-lg text-neutral-400 hover:text-red-600 active:shadow-neu-inset-sm transition-all"
                           aria-label="Delete document"
                         >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -322,7 +322,7 @@ export function StudentDetail() {
         {/* Profile card */}
         <Card className="lg:col-span-1">
           <div className="flex flex-col items-center px-6 py-6">
-            <div className="h-20 w-20 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-2xl font-bold mb-3">
+            <div className="h-20 w-20 rounded-full neu-raised-sm text-primary-700 flex items-center justify-center text-2xl font-bold mb-3">
               {(student.first_name[0] ?? '') + (student.last_name[0] ?? '')}
             </div>
             <h2 className="text-lg font-semibold text-neutral-900">{fullName}</h2>

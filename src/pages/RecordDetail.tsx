@@ -183,7 +183,7 @@ export function RecordDetail() {
                   onClick={() => navigate(`/students/${record.students!.id}`)}
                   className="flex items-center gap-3 w-full text-left group"
                 >
-                  <div className="h-10 w-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-sm font-semibold shrink-0">
+                  <div className="h-10 w-10 rounded-full neu-raised-sm text-primary-700 flex items-center justify-center text-sm font-semibold shrink-0">
                     {(record.students.first_name[0] ?? '') + (record.students.last_name[0] ?? '')}
                   </div>
                   <div className="min-w-0">

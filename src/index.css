@@ -19,6 +19,79 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #e6e9ef;
+  color: #2d3142;
+}
+
+/* ── Neumorphic shadow utilities ── */
+@layer components {
+  /* Raised surface — cards, panels */
+  .neu-raised {
+    background: #e6e9ef;
+    box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.45),
+                -6px -6px 12px rgba(255, 255, 255, 0.9);
+  }
+
+  .neu-raised-sm {
+    background: #e6e9ef;
+    box-shadow: 4px 4px 8px rgba(163, 177, 198, 0.4),
+                -4px -4px 8px rgba(255, 255, 255, 0.85);
+  }
+
+  /* Pressed / inset surface — inputs, active states */
+  .neu-inset {
+    background: #e6e9ef;
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.85);
+  }
+
+  .neu-inset-sm {
+    background: #e6e9ef;
+    box-shadow: inset 3px 3px 6px rgba(163, 177, 198, 0.35),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+  }
+
+  /* Flat base surface for large areas */
+  .neu-base {
+    background: #e6e9ef;
+  }
+
+  /* Hover lift for interactive cards */
+  .neu-hover {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .neu-hover:hover {
+    box-shadow: 8px 8px 16px rgba(163, 177, 198, 0.5),
+                -8px -8px 16px rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  /* Active press */
+  .neu-pressed:active {
+    box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.4),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.85);
+  }
+}
+
+/* ── Keyboard focus ── */
+:focus-visible {
+  outline: 3px solid #4a6fa5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(163, 177, 198, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 177, 198, 0.6);
 }

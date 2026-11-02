@@ -117,13 +117,13 @@ export function Documents() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by title or filename"
-            className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
+            className="w-full pl-9 pr-3 py-2 text-sm rounded-xl neu-inset-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as DocumentStatus | 'all')}
-          className="px-3 py-2 text-sm rounded-lg border border-neutral-300 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none bg-white"
+          className="px-3 py-2 text-sm rounded-xl neu-inset-sm focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
         >
           {STATUS_OPTIONS.map((s) => (
             <option key={s} value={s}>
@@ -168,7 +168,7 @@ export function Documents() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-neutral-200 bg-neutral-50">
+                <tr className="border-b border-neutral-200/60">
                   <th className="text-left px-4 py-3 text-xs font-semibold text-neutral-600 uppercase tracking-wider">Title</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-neutral-600 uppercase tracking-wider hidden md:table-cell">Student</th>
                   <th className="text-left px-4 py-3 text-xs font-semibold text-neutral-600 uppercase tracking-wider hidden sm:table-cell">File</th>
@@ -184,7 +184,7 @@ export function Documents() {
                   <tr
                     key={doc.id}
                     onClick={() => navigate(`/documents/${doc.id}`)}
-                    className="hover:bg-neutral-50 cursor-pointer transition-colors"
+                    className="hover:bg-surface-light cursor-pointer transition-colors"
                   >
                     <td className="px-4 py-3">
                       <p className="text-sm font-medium text-neutral-900 truncate">{doc.title}</p>
@@ -226,7 +226,7 @@ export function Documents() {
                       <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => setDeleteTarget(doc)}
-                          className="p-1.5 rounded-lg text-neutral-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="p-1.5 rounded-lg text-neutral-500 hover:text-red-600 active:shadow-neu-inset-sm transition-all"
                           aria-label="Delete"
                         >
                           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

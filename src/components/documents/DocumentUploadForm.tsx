@@ -91,11 +91,11 @@ export function DocumentUploadForm({ defaultStudentId, lockStudent, onSubmit, on
   }
 
   const inputClass = (key: string) =>
-    `w-full rounded-lg border px-3 py-2 text-sm transition-colors ${
+    `w-full rounded-xl px-3 py-2 text-sm transition-all neu-inset-sm ${
       errors[key]
-        ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
-        : 'border-neutral-300 focus:border-primary-500 focus:ring-primary-500'
-    } focus:outline-none focus:ring-1`
+        ? 'text-red-700 focus-visible:outline-red-500'
+        : 'focus-visible:outline-primary-500'
+    } focus:outline-none focus-visible:outline-3 focus-visible:outline-offset-2`
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,10 +106,10 @@ export function DocumentUploadForm({ defaultStudentId, lockStudent, onSubmit, on
         </label>
         <div
           onClick={() => fileInputRef.current?.click()}
-          className={`flex items-center justify-center w-full rounded-lg border-2 border-dashed px-4 py-6 cursor-pointer transition-colors ${
+          className={`flex items-center justify-center w-full rounded-xl px-4 py-6 cursor-pointer transition-all ${
             errors.file
-              ? 'border-red-300 hover:border-red-400 bg-red-50'
-              : 'border-neutral-300 hover:border-primary-400 hover:bg-neutral-50'
+              ? 'neu-inset-sm text-red-600'
+              : 'neu-inset-sm text-neutral-600 hover:neu-raised-sm'
           }`}
         >
           <input
@@ -143,7 +143,7 @@ export function DocumentUploadForm({ defaultStudentId, lockStudent, onSubmit, on
             type="text"
             value={students.find((s) => s.id === form.student_id)?.student_number ?? form.student_id}
             disabled
-            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm bg-neutral-50 text-neutral-500"
+            className="w-full rounded-xl px-3 py-2 text-sm neu-inset-sm text-neutral-500 opacity-70"
           />
         ) : (
           <select
