@@ -126,6 +126,22 @@ export type ExpiryAlert = {
   updated_at: string
 }
 
+export type HybridSearchResult = {
+  document_id: string
+  title: string
+  file_name: string
+  status: string
+  student_id: string
+  student_name: string
+  student_number: string
+  similarity_score: number
+  keyword_score: number
+  combined_rank: number
+  matched_chunk: string | null
+}
+
+export type SearchMode = 'vector' | 'keyword' | 'hybrid'
+
 export type AuditLog = {
   id: string
   actor_id: string | null
@@ -440,7 +456,16 @@ export type Database = {
       Row: Record<string, unknown>
       Relationships: []
     }>
-    Functions: Record<string, {
+    Functions: {
+      hybrid_search: {
+        Args: {
+          p_query: string
+          p_match_count: number
+          p_mode: 'vector' | 'keyword' | 'hybrid'
+        }
+        Returns: HybridSearchResult[]
+      }
+    } & Record<string, {
       Args: Record<string, unknown>
       Returns: unknown
     }>
